@@ -17,7 +17,7 @@ Flow: Job creation, processing and real-time update back to Client
     - b. fails, Dead letter worker updates job status and error info in DB
 9. If it
     - a. suceeds, Results worker publishes the result to the app server which subscribes to it
-    - b. fails, Dead letter worker would publishes the result to the app server which subscribes to it
+    - b. fails, Dead letter worker would publish the result to the app server which subscribes to it
 10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connecion issue b/w client and server. 
 
 Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
@@ -35,12 +35,13 @@ You should be able to access the app on `http://localhost:5173/`
 ### Backend: Node App
 Open a terminal and inside the `backend` directory run
 ```
-docker compose up
+docker compose up --build
 ```
 This would run a:
-1. Node app server
+1. Node app server in a docker container
 2. Redis container to support `bullmq` message queues
-3. Jobs worker
+3. Jobs worker in a docker container
+4. volume to retain db data and let containers read/write it
 
 ## Improvements:
 Backend:
@@ -57,3 +58,4 @@ Backend:
 
 Frontend:
 1. Cache images (May use browser caching or Nextjs which provides image caching out of the box)
+2. Initialise both projects with a monorepo framework or orchestrator like TurboRepo to use commonly shared interfaces i.e Job interface etc. TurboRepo also provides support for remote caching which would make builds super fast.

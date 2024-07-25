@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-server": "tsc -b",
-    "dev-server": "ts-node src/index.ts",
-    "build-worker": "tsc -b",
-    "dev-worker": "ts-node src/workers/jobs.worker.ts",
+    "build": "tsc -b",
+    "start-server": "ts-node src/index.ts",
+    "start-jobs-worker": "ts-node src/workers/jobs.worker.ts",
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.2",
     "bullmq": "^5.10.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -27,6 +27,7 @@
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.11",
+    "@types/node-fetch": "^2.6.11",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
     "eslint": "^9.7.0",

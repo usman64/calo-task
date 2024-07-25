@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+    command: npm run start-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - PORT=${PORT}
+    volumes:
+      - shared_data:/app/backend/data
+
+  jobs_worker:
+    build:
+      context: .
+    command: npm run start-jobs-worker
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - UNSPLASH_ACCESS_TOKEN=${UNSPLASH_ACCESS_TOKEN}
+    volumes:
+      - shared_data:/app/backend/data
+  redis:
+    image: "redis"
+    ports:
+      - "6379:6379"
+volumes:
+  shared_data:

@@ -1,7 +1,5 @@
+import axios from 'axios';
 import { Worker } from 'bullmq';
-import { createApi } from 'unsplash-js';
-import { ApiResponse } from 'unsplash-js/dist/helpers/response';
-import { Random } from 'unsplash-js/dist/methods/photos/types';
 import 'dotenv/config';
 
 import { redisConnection } from '../config/redis.config';
@@ -10,10 +8,7 @@ import { JOB_STATUS, JobData, JobResult } from '../lib/types';
 import { resultsQueue } from '../queues/results.queue';
 import { deadLetterQueue } from '../queues/deadLetter.queue';
 
-const unsplash = createApi({
-  accessKey: process.env.UNSPLASH_ACCESS_TOKEN || '',
-  fetch: fetch,
-});
+const UNSPLASH_API_URL = 'https://api.unsplash.com/photos/random';
 
 const worker = new Worker('jobQueue', async job => {
   try {
@@ -46,17 +41,27 @@ async function processJob(id: string): Promise<JobResult> {
   return new Promise((resolve, reject) => {
     setTimeout(async () => {
       try {
-        const result: ApiResponse<Random | Random[]> = await unsplash.photos.getRandom({query: 'food', count: 1})
-        if (result.errors) {
-          reject(result.errors)
-        } else {
-          // @ts-ignore
-          const imageUrl: string = result.response[0].urls.small
+        const response = await axios.get(UNSPLASH_API_URL, {
+          params: {
+            query: 'food',
+            count: 1
+          },
+          headers: {
+            Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_TOKEN}`
+          }
+        });
+
+        if (response.status === 200) {
+          const imageUrl: string = response.data[0].urls.small;
           resolve({ imageUrl });
+        } else {
+          console.error('Unsplash API errors:', response.data.errors);
+          reject(response.data.errors);
         }
-      } catch(err) {
+      } catch (err) {
+        console.error('Error fetching from Unsplash:', err);
         reject(JSON.stringify(err));
       }
-    }, randomDelay)
+    }, randomDelay);
   })
 }
