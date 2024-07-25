@@ -7,7 +7,7 @@ import { Header } from '../components/header.component';
 import { Button } from '../components/button.component';
 import { JobContext } from '../context/job.context';
 import { Job } from '../lib/types';
-import { JOB_ACTIONS } from '../context/actions/job.actions.';
+import { JOB_ACTIONS } from '../context/actions/job.actions';
 import { PAGE_SIZE } from '../lib/constants';
 import Pagination from '../components/pagination.component';
 

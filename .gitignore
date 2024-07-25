@@ -3,7 +3,7 @@ backend/node_modules
 backend/package-lock.json
 backend/Questions
 backend/.env
-frontend/dist
+backend/dist
 
 # Frontend
 frontend/logs

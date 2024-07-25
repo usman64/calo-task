@@ -6,7 +6,7 @@ import { JobInfo } from "../components/jobInfo.component";
 import { Header } from "../components/header.component";
 import { JobContext } from "../context/job.context";
 import { Job } from "../lib/types";
-import { JOB_ACTIONS } from "../context/actions/job.actions.";
+import { JOB_ACTIONS } from "../context/actions/job.actions";
 
 
 export function JobInfoPage(): JSX.Element {
