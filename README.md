@@ -10,14 +10,14 @@ Flow: Job creation, processing and real-time update back to Client
 5. Jobs worker processes job
 6. If it succeeds it adds the result to results queue else if it fails it adds it to the dead letter queue
 7. If it
-    a. suceeds, Results worker picks it up
-    b. fails, Dead letter worker picks it up
+    - a. suceeds, Results worker picks it up
+    - b. fails, Dead letter worker picks it up
 8. If it
-    a. suceeds, Results Worker updates the result in DB
-    b. fails, Dead letter worker updates job status and error info in DB
+    - a. suceeds, Results Worker updates the result in DB
+    - b. fails, Dead letter worker updates job status and error info in DB
 9. If it
-    a. suceeds, Results worker publishes the result to the app server which subscribes to it
-    b. fails, Dead letter worker would publishes the result to the app server which subscribes to it
+    - a. suceeds, Results worker publishes the result to the app server which subscribes to it
+    - b. fails, Dead letter worker would publishes the result to the app server which subscribes to it
 10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connecion issue b/w client and server. 
 
 Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
