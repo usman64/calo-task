@@ -41,9 +41,9 @@ This would run a:
 1. Node app server in a docker container
 2. Redis container to support `bullmq` message queues
 3. Jobs worker in a docker container
-4. volume to retain db data and let containers read/write it
+4. Volume to retain db data and let containers read/write it
 
-## Improvements:
+## Future Improvements:
 Backend:
 1. Add an API Gateway to add
     - rate limiting since unsplash API supports only 50 requests per hour in free mode
