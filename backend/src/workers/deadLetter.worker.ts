@@ -2,14 +2,14 @@ import { Worker } from "bullmq";
 
 import { JobData } from "../lib/types";
 import { redisConnection } from "../config/redis.config";
-import { sendEvent } from "../lib/sse";
-import db from "../db";
+import { sendEvent } from "../lib/serverSideEventsHandler";
+import JobModel from "../models/Job.model";
 
 function initializeDeadLetterWorker() {
   const worker = new Worker('deadLetterQueue', async job => {
     try {
       const {id, status, result }: JobData = job.data;
-      db.update(id, { status, result })
+      JobModel.update(id, { status, result })
       sendEvent(JSON.stringify(job.data))
     } catch(err) {
       console.log("Error in results worker", err)

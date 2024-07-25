@@ -3,7 +3,7 @@ import cors from "cors"
 import 'dotenv/config';
 
 import jobRoutes from './routes/job.routes';
-import { liveUpdatesHandler } from './lib/sse';
+import { serverSideEventsHandler } from './lib/serverSideEventsHandler';
 import { initializeResultsWorker } from './workers/results.worker';
 import { initializeDeadLetterWorker } from './workers/deadLetter.worker';
 
@@ -13,14 +13,15 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get('/live', liveUpdatesHandler);
+app.get('/live', serverSideEventsHandler);
 app.use('/api', jobRoutes);
 
 /*
- ideally these workers should not be here and run as separate node process.
- But, added them on main server due to time constraint. Otherwise, I would
- store the clients in another Redis instane and these workers would get those clients
- from that Redis instance and run the sendEvents functions on them.
+ Note: Ideally results & deadletter workers below should not be initialised here and should run as separate node processes/deployed on lamda,
+ but are not because of limited time.
+ Problem: I faced race condition issue when multiple workers tried to update my local db (txt file) so didn't run them separately, but initialised here.
+ I could improve it by locally implementing mutex locking or preferably refactoring my db layer to a managed db i.e mongoDB/DynamoDB etc which handles these 
+ cases out of the box, but as I've limited time so adding them here on main server. I can explain on call how I would actually implement this/add a diagram on github
 */
 initializeResultsWorker();
 initializeDeadLetterWorker();

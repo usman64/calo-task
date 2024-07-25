@@ -1,10 +1,15 @@
 import fs from 'fs';
-import path from 'path';
 
-import { JobData } from '../lib/types';
+export interface getAllType<T> {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  data: T[]
+}
 
-class Database<T> {
-  public cachedData: T[]; // ideally I'd cache this in another Redis instance
+export class Database<T> {
+  public cachedData: T[];
   private filePath: string;
 
   constructor(filePath: string) {
@@ -13,21 +18,21 @@ class Database<T> {
     this.cachedData = this.readDataFromFile();
   }
 
-  add(data: T): void {
+  public add(data: T): void {
     this.cachedData.push(data);
     this.writeDataToFile(this.cachedData);
   }
 
-  getById(id: string): T | undefined {
+  public getById(id: string): T | undefined {
     const item = this.cachedData.find((item: any) => item.id === id);
     return item;
   }
 
-  getAll(page: number = 1, pageSize: number = 10) {
+  public getAll(page: number = 1, pageSize: number = 10, sortKey: string = ''): getAllType<T> {
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const paginatedData = this.cachedData // @ts-ignore
-                              .sort((a: T, b: T) => b.created_at - a.created_at) 
+                              .sort((a: T, b: T) => b[sortKey] - a[sortKey]) 
                               .slice(startIndex, endIndex);
 
     return {
@@ -39,7 +44,7 @@ class Database<T> {
     };
   }
 
-  update(id: string, updatedFields: any): T | null {
+  public update(id: string, updatedFields: any): T | null {
     this.cachedData = this.readDataFromFile();
     const index = this.cachedData.findIndex((item: any) => item.id === id);
     if (index !== -1) {
@@ -53,13 +58,17 @@ class Database<T> {
     }
   }
 
-  initializeFile(): void {
+  public clear(): void {
+    this.writeDataToFile([]);
+  }
+
+  private initializeFile(): void {
     if (!fs.existsSync(this.filePath)) {
       fs.writeFileSync(this.filePath, JSON.stringify([]), 'utf8');
     }
   }
 
-  readDataFromFile(): T[] {
+  private readDataFromFile(): T[] {
     try {
       const fileContent = fs.readFileSync(this.filePath, 'utf8');
       return JSON.parse(fileContent);
@@ -69,7 +78,7 @@ class Database<T> {
     }
   }
 
-  writeDataToFile(data: T[]): void {
+  private writeDataToFile(data: T[]): void {
     try {
       fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), 'utf8');
     } catch (error) {
@@ -77,7 +86,3 @@ class Database<T> {
     }
   }
 }
-
-const db = new Database<JobData>(path.join(__dirname, 'data.txt'));
-
-export default db;

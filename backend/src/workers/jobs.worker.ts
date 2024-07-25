@@ -51,7 +51,7 @@ async function processJob(id: string): Promise<JobResult> {
           reject(result.errors)
         } else {
           // @ts-ignore
-          const imageUrl: keyof Random = result.response[0].urls.small
+          const imageUrl: string = result.response[0].urls.small
           resolve({ imageUrl });
         }
       } catch(err) {

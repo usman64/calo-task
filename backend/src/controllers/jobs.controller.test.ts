@@ -1,8 +1,8 @@
 import request from 'supertest';
 import express from 'express';
 import jobRoutes from '../routes/job.routes';
-import db from '../db';
 import { JOB_STATUS } from '../lib/types';
+import JobModel from '../models/Job.model';
 
 const app = express();
 app.use(express.json());
@@ -10,7 +10,7 @@ app.use('/api', jobRoutes);
 
 describe('Job Controller', () => {
   beforeEach(() => {
-    // db.clear();
+    JobModel.clear(); //Improvement: We should use test db here
   });
 
   it('should create a new job', async () => {

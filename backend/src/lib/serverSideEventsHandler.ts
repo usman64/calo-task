@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 let clients: Response[] = [];
 
-export const liveUpdatesHandler = (req: Request, res: Response): void => {
+export const serverSideEventsHandler = (req: Request, res: Response): void => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
