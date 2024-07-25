@@ -6,15 +6,21 @@ Flow: Job creation, processing and real-time update back to Client
 1. Client sends request to create job `POST /jobs`
 2. Server generates a id and stores the job in pending state in DB
 3. Adds job to a message queue (Jobs Queue)
-4. Jobs worker processes job
-5. If it succeeds it adds the result to results queue |||| If it fails it adds it to dead letter queue
-6. Results worker picks it up |||| Dead letter worker picks it up
-7. Results Worker updates the result in DB ||| Dead letter worker updates job status and error info in DB
-8. Results/dead letter worker should publish the result to app server which subscribes to it
-9. App server then relay it to the server as soon as it recieves he result through server side events which would
-handle the unstable internet connecion issue and would be a better choice over websockets in this case.
+4. Returns response to FE with Job id and pending status
+5. Jobs worker processes job
+6. If it succeeds it adds the result to results queue else if it fails it adds it to the dead letter queue
+7. If it
+    a. suceeds, Results worker picks it up
+    b. fails, Dead letter worker picks it up
+8. If it
+    a. suceeds, Results Worker updates the result in DB
+    b. fails, Dead letter worker updates job status and error info in DB
+9. If it
+    a. suceeds, Results worker publishes the result to the app server which subscribes to it
+    b. fails, Dead letter worker would publishes the result to the app server which subscribes to it
+10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connecion issue b/w client and server. 
 
-Note: In code, step 8 is not handled as written here. I've mentioned the reason in backend/src/index.js
+Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
 
 ## Setup Instructions
 ### Frontend: React App
