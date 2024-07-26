@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react';
 
 import { Action } from './actions/job.actions';
 import { jobReducer } from './reducers/jobs.reducer';
-import { JobProviderProps, State } from './types';
+import { JobProviderProps, State } from './common/types';
 
 const initialState: State = {
   jobs: {},

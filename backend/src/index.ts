@@ -13,8 +13,8 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get('/live', serverSideEventsHandler);
-app.use('/api', jobRoutes);
+app.get('/api/live', serverSideEventsHandler);
+app.use('/api/jobs', jobRoutes);
 
 /*
  Note: Ideally results & deadletter workers below should not be initialised here and should run as separate node processes/deployed on lamda,

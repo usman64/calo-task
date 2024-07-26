@@ -41,7 +41,8 @@ This would run a:
 1. Node app server in a docker container
 2. Redis container to support `bullmq` message queues
 3. Jobs worker in a docker container
-4. Volume to retain db data and let containers read/write it
+4. Bind mount will be created to retain db data and let containers read/write it. You will notice a directory named `local_db_copy` will appear in this project's root folder once containers are initialised successfully. This is where you
+can track db updates.
 
 ## Future Improvements:
 Backend:

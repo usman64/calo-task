@@ -10,7 +10,7 @@ function App() {
   const { dispatch } = useContext(JobContext);
 
   useEffect(() => {
-    const eventSource = new EventSource('http://localhost:8000/live')
+    const eventSource = new EventSource('/api/live')
     eventSource.onmessage = (e): void => {
       const jobData: Job = JSON.parse(e.data);
       dispatch({ type: JOB_ACTIONS.UPDATE_JOB, payload: jobData });

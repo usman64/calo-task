@@ -19,7 +19,7 @@ export function JobInfoPage(): JSX.Element {
 
   const fetchJob = async () => {
     try {
-      const response = await axios.get<Job>(`http://localhost:8000/api/jobs/${id}`); // proxy url
+      const response = await axios.get<Job>(`/api/jobs/${id}`);
       dispatch({ type: JOB_ACTIONS.SET_JOB, payload: response.data });
     } catch (error) {
       console.error('Error fetching jobs:', error);

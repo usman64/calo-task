@@ -1,6 +1,6 @@
 import { Action, JOB_ACTIONS } from "../actions/job.actions";
-import { State } from "../types";
-import { transformToMap } from "../utils";
+import { State } from "../common/types";
+import { transformToMap } from "../common/utils";
 
 export const jobReducer = (state: State, action: Action): State => {
   switch (action.type) {

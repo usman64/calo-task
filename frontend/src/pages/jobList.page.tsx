@@ -23,7 +23,7 @@ export const JobListPage: React.FC = React.memo(() => {
 
   const fetchJobs = async (page: number) => {
     try {
-      const response = await axios.get<{data: Job[]}>(`http://localhost:8000/api/jobs?page=${page}&pageSize=${PAGE_SIZE}`);
+      const response = await axios.get<{data: Job[]}>(`/api/jobs?page=${page}&pageSize=${PAGE_SIZE}`);
       console.log(response.data)
       // @ts-ignore
       setTotal(response.data?.total)
@@ -35,7 +35,7 @@ export const JobListPage: React.FC = React.memo(() => {
 
   const handleCreateJob = async () => {
     try {
-      await axios.post('http://localhost:8000/api/jobs');
+      await axios.post('/api/jobs');
       fetchJobs(currentPage)
       // alert('New job created')
     } catch (error) {

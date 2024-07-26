@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { Job } from "../lib/types";
+import { Job } from "../../lib/types";
 
 export type JobStateType = Partial<{ [key: string]: Job; }>;
 
