@@ -1,28 +1,37 @@
-# Calo-task
+# Calo Task
 
 ## High Level Design
-Flow: Job creation, processing and real-time update back to Client
+<strong>Flow: Job creation, processing and real-time update back to Client</strong>
+
 ![High level design](high-level-design.png)
 1. Client sends request to create job `POST /jobs`
 2. Server generates a id and stores the job in pending state in DB
 3. Adds job to a message queue (Jobs Queue)
 4. Returns response to FE with Job id and pending status
 5. Jobs worker processes job
-6. If it succeeds it adds the result to results queue else if it fails it adds it to the dead letter queue
+6. If it succeeds, it adds the result to results queue, else if it fails, it adds it to the dead letter queue
 7. If it
-    - a. suceeds, Results worker picks it up
+    - a. succeeds, Results worker picks it up
     - b. fails, Dead letter worker picks it up
 8. If it
-    - a. suceeds, Results Worker updates the result in DB
+    - a. succeeds, Results Worker updates the result in DB
     - b. fails, Dead letter worker updates job status and error info in DB
 9. If it
-    - a. suceeds, Results worker publishes the result to the app server which subscribes to it
+    - a. succeeds, Results worker publishes the result to the app server which subscribes to it
     - b. fails, Dead letter worker would publish the result to the app server which subscribes to it
-10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connecion issue b/w client and server. 
+10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connection issue b/w client and server. 
 
-Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
+Note: 
+- In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
+- Reason to use results & dead letter queues/worker is to allow job worker to process jobs with more scalability as let's say if a job is processed, but job worker crashes and if we were updating the result in DB from jobs worker then we would lose it. Also, incase database is not available then also it gets lost. Results worker makes sure it retains the result and retries on failure while taking the responsibility to update result in database. Similarly, dead letter queue or worker can be used to manage failed jobs i.e write them in a separate database and retry through a scheduled cron job later depending on the requirements how we want to handle failed jobs.
 
 ## Setup Instructions
+
+Clone this git repository on your machine
+```
+git clone https://github.com/usman64/calo-task.git
+```
+
 ### Frontend: React App
 Open a terminal and inside the `frontend` directory run 
 ```
@@ -33,16 +42,38 @@ You should be able to access the app on `http://localhost:5173/`
 
 
 ### Backend: Node App
-Open a terminal and inside the `backend` directory run
+First, Create a copy of `.env.sample` file and rename that to `.env`. Update your `UNSPLASH_ACCESS_TOKEN` in the file
+
+Then, open a terminal and inside the `backend` directory run
 ```
 docker compose up --build
 ```
+    
 This would run a:
 1. Node app server in a docker container
 2. Redis container to support `bullmq` message queues
 3. Jobs worker in a docker container
 4. Bind mount will be created to retain db data and let containers read/write it. You will notice a directory named `local_db_copy` will appear in this project's root folder once containers are initialised successfully. This is where you
 can track db updates.
+
+### Time Report
+| Task                                                    | Time Spent |
+|---------------------------------------------------------|------------|
+| Project Planning                                        | 2 hours    |
+| Backend   - Project Initialization                      | 1 hour     |
+| Backend   - Implement Job Endpoints                     | 1 hour     |
+| Backend   - Implement Job Execution Logic               | 3 hours    |
+| Backend   - Implement DB layer using file-system        | 1.5 hours  |
+| Backend   - Implement SSE for real-time job updates     | 2 hours    |
+| Frontend  - Project initialization                      | 1 hour     |
+| Frontend  - Job List Page                               | 1.5 hours  |
+| Frontend  - Job Detail Page                             | 30 mins    |
+| Frontend  - Job Creation Flow                           | 1 hour     |
+| Frontend  - Real-time Job Updates                       | 2 hours    |
+| Backend   - Containerizing app                          | 2 hours    |
+| Testing and Debugging                                   | 6 hours    |
+| Documentation                                           | 1 hour     |
+| **Total**                                               | **25.5 hours** |
 
 ## Future Improvements:
 Backend:
