@@ -56,7 +56,7 @@ This would run a:
 4. Bind mount will be created to retain db data and let containers read/write it. You will notice a directory named `local_db_copy` will appear in this project's root folder once containers are initialised successfully. This is where you
 can track db updates.
 
-### Time Report
+### Time Report:
 | Task                                                    | Time Spent |
 |---------------------------------------------------------|------------|
 | Project Planning                                        | 2 hours    |
