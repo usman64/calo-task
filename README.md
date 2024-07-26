@@ -23,11 +23,11 @@
     b. fails, Dead letter worker would publish the result to the app server which subscribes to it
 10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connection issue b/w client and server. 
 
-Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/server.js
+Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/server.ts
 
 <strong> Wondering why we are using results & dead letter queues/worker instead of only jobs queue/worker? </strong>
 
-It is to allow job worker to process jobs with more efficiently and let's say if a job is processed, but the job worker crashes. In this case, if had logic to update the result in DB inside the jobs worker then we would lose it the result. Also, incase database is not available then also the result gets lost. Results queue/worker makes sure it retains the result and retries on failure while taking the responsibility to update result in database. Similarly, dead letter queue or worker can be used to manage failed jobs i.e write them in a separate database and retry through a scheduled cron job later depending on the requirements how we want to handle failed jobs.
+It is to allow job worker to process jobs more efficiently and let's say if a job is processed, but the job worker crashes. In this case, if we had the logic to update the result in DB inside the jobs worker then we would lose the result. Also, incase database is not available then also the result gets lost. Results queue/worker makes sure it retains the result and retries on failure while taking the responsibility to update result in database. Similarly, dead letter queue or worker can be used to manage failed jobs i.e write them in a separate database and retry through a scheduled cron job later depending on the requirements how we want to handle failed jobs.
 
 ## Setup Instructions
 
