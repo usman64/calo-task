@@ -48,10 +48,10 @@ export function JobListPage(): JSX.Element {
   const memoizedJobs: Job[] = useMemo(() => Object.values(state.jobs), [state.jobs]) as Job[];
 
   return (
-    <div className='ml-5 text-center'>
+    <div className='mx-4 sm:mx-6 lg:mx-8 text-center'>
       <Header>Job List</Header>
-      <Button onClick={handleCreateJob}>Create New Job</Button>
-      {error && <div className="text-red-500">{error}</div>}
+      <Button onClick={handleCreateJob} className="mb-4">Create New Job</Button>
+      {error && <div className="text-red-500 mb-4">{error}</div>}
       {
         memoizedJobs.length ? (
           <>
@@ -61,7 +61,7 @@ export function JobListPage(): JSX.Element {
               pageSize={PAGE_SIZE}
               onPageChange={(page) => setCurrentPage(page)}
             />
-            <div className='grid grid-cols-3 gap-4'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
               {
                 memoizedJobs.map((job: Job) => (
                   <div className='my-5 hover:cursor-pointer' key={job?.id} onClick={() => navigate(`/jobs/${job?.id}`)}>
@@ -72,11 +72,11 @@ export function JobListPage(): JSX.Element {
             </div>
           </>
         ) : (
-          <div> No Jobs to display. Please create new jobs </div>
+          <div>No Jobs to display. Please create new jobs</div>
         )
       }
     </div>
   );
-};
+}
 
 export default JobListPage;

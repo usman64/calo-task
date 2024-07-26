@@ -1,4 +1,6 @@
 # Calo Task
+![App screenshot](app.png)
+
 
 ## High Level Design
 <strong>Flow: Job creation, processing and real-time update back to Client</strong>
