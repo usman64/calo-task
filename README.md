@@ -21,7 +21,7 @@
     b. fails, Dead letter worker would publish the result to the app server which subscribes to it
 10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connection issue b/w client and server. 
 
-Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
+Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/server.js
 
 <strong> Wondering why we are using results & dead letter queues/worker instead of only jobs queue/worker? </strong>
 
@@ -109,3 +109,4 @@ Backend:
 Frontend:
 1. Cache images (May use browser caching or Nextjs which provides image caching out of the box)
 2. Initialise both projects with a monorepo framework or orchestrator like TurboRepo to use commonly shared interfaces i.e Job interface etc. TurboRepo also provides support for remote caching which would make builds super fast.
+3. Place header component above routes or in a layout component and set the title through state management

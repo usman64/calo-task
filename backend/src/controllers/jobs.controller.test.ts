@@ -15,7 +15,7 @@ describe('Job Controller', () => {
 
   it('should create a new job', async () => {
     const response = await request(app).post('/api/jobs').send({});
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
     expect(response.body.status).toBe(JOB_STATUS.PENDING);
   });

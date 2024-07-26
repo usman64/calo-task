@@ -15,7 +15,7 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - PORT=${PORT}
-      - NODE_ENV={NODE_ENV}
+      - NODE_ENV=${NODE_ENV}
     volumes:
       - "./../local_data_copy:/app/data"
   jobs_worker:
@@ -30,7 +30,7 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - UNSPLASH_ACCESS_TOKEN=${UNSPLASH_ACCESS_TOKEN}
-      - NODE_ENV={NODE_ENV}
+      - NODE_ENV=${NODE_ENV}
     volumes:
       - "./../local_data_copy:/app/data"
   redis:

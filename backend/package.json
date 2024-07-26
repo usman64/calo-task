@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start-server": "ts-node src/index.ts",
+    "start-server": "ts-node src/server.ts",
     "start-jobs-worker": "ts-node src/workers/jobs.worker.ts",
     "test": "jest"
   },

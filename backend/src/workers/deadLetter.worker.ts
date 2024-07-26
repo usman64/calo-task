@@ -1,9 +1,9 @@
 import { Worker } from "bullmq";
 
-import { JobData } from "../lib/types";
-import { redisConnection } from "../config/redis.config";
-import { sendEvent } from "../lib/serverSideEventsHandler";
 import JobModel from "../models/Job.model";
+import { redisConnection } from "../config/redis.config";
+import { JobData } from "../lib/types";
+import { sendEvent } from "../lib/serverSideEventsHandler";
 
 function initializeDeadLetterWorker() {
   const worker = new Worker('deadLetterQueue', async job => {

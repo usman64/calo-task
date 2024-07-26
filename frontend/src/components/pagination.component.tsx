@@ -5,7 +5,7 @@ interface PaginationProps {
   onPageChange: (_: number) => void;
 }
 
-const Pagination = ({ total, currentPage, pageSize, onPageChange }: PaginationProps) => {
+const Pagination = ({ total, currentPage, pageSize, onPageChange }: PaginationProps): JSX.Element => {
   const totalPages = Math.ceil(total / pageSize);
 
   const handlePrevious = () => {

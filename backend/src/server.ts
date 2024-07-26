@@ -17,10 +17,10 @@ app.get('/api/live', serverSideEventsHandler);
 app.use('/api/jobs', jobRoutes);
 
 /*
- Note: Ideally results & deadletter workers below should not be initialised here and should run as separate node processes/deployed on lamda,
+ Note: Ideally results & deadletter workers below should not be initialised here and should run as separate node processes,
  but are not because of limited time.
  Problem: I faced race condition issue when multiple workers tried to update my local db (txt file) so didn't run them separately, but initialised here.
- I could improve it by locally implementing mutex locking or preferably refactoring my db layer to a managed db i.e mongoDB/DynamoDB etc which handles these 
+ I could fix it by locally implementing locking on file or preferably refactoring my db layer to a managed db i.e mongoDB/DynamoDB etc which handles these 
  cases out of the box, but as I've limited time so adding them here on main server. I can explain on call how I would actually implement this/add a diagram on github
 */
 initializeResultsWorker();
