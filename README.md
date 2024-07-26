@@ -10,20 +10,22 @@
 4. Returns response to FE with Job id and pending status
 5. Jobs worker processes job
 6. If it succeeds, it adds the result to results queue, else if it fails, it adds it to the dead letter queue
-7. If it
-    - a. succeeds, Results worker picks it up
-    - b. fails, Dead letter worker picks it up
-8. If it
-    - a. succeeds, Results Worker updates the result in DB
-    - b. fails, Dead letter worker updates job status and error info in DB
-9. If it
-    - a. succeeds, Results worker publishes the result to the app server which subscribes to it
-    - b. fails, Dead letter worker would publish the result to the app server which subscribes to it
+7. If it <br />
+    a. succeeds, Results worker picks it up <br />
+    b. fails, Dead letter worker picks it up
+8. If it <br />
+    a. succeeds, Results Worker updates the result in DB <br />
+    b. fails, Dead letter worker updates job status and error info in DB
+9. If it <br />
+    a. succeeds, Results worker publishes the result to the app server which subscribes to it <br />
+    b. fails, Dead letter worker would publish the result to the app server which subscribes to it
 10. App server then relays the result and status to the server as soon as it recieves it through server side events which would be a better choice over websockets in this case where there's unstable internet connection issue b/w client and server. 
 
-Note: 
-- In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
-- Reason to use results & dead letter queues/worker is to allow job worker to process jobs with more scalability as let's say if a job is processed, but job worker crashes and if we were updating the result in DB from jobs worker then we would lose it. Also, incase database is not available then also it gets lost. Results worker makes sure it retains the result and retries on failure while taking the responsibility to update result in database. Similarly, dead letter queue or worker can be used to manage failed jobs i.e write them in a separate database and retry through a scheduled cron job later depending on the requirements how we want to handle failed jobs.
+Note: In code, step 9 is not handled as written here. I've mentioned the reason in backend/src/index.js
+
+<strong> Wondering why we are using results & dead letter queues/worker instead of only jobs queue/worker? </strong>
+
+It is to allow job worker to process jobs with more efficiently and let's say if a job is processed, but the job worker crashes. In this case, if had logic to update the result in DB inside the jobs worker then we would lose it the result. Also, incase database is not available then also the result gets lost. Results queue/worker makes sure it retains the result and retries on failure while taking the responsibility to update result in database. Similarly, dead letter queue or worker can be used to manage failed jobs i.e write them in a separate database and retry through a scheduled cron job later depending on the requirements how we want to handle failed jobs.
 
 ## Setup Instructions
 
@@ -42,19 +44,35 @@ You should be able to access the app on `http://localhost:5173/`
 
 
 ### Backend: Node App
-First, Create a copy of `.env.sample` file and rename that to `.env`. Update your `UNSPLASH_ACCESS_TOKEN` in the file
+First, create a copy of `.env.sample` file and rename that file to `.env`. Update your `UNSPLASH_ACCESS_TOKEN` in the file
 
 Then, open a terminal and inside the `backend` directory run
 ```
-docker compose up --build
-```
-    
+docker-compose up --build
+``` 
 This would run a:
 1. Node app server in a docker container
 2. Redis container to support `bullmq` message queues
 3. Jobs worker in a docker container
-4. Bind mount will be created to retain db data and let containers read/write it. You will notice a directory named `local_db_copy` will appear in this project's root folder once containers are initialised successfully. This is where you
-can track db updates.
+4. Bind mount will be created to retain db data and let containers read/write it. You will notice a directory named `local_db_copy` appear in the project's root folder once containers are initialised successfully. This is where you can see files storing data from different environments.
+
+Note: To run in detached mode add `-d` flag
+
+To stop the containers, run 
+```
+docker-compose down
+```
+
+#### Test your app:
+To run tests, with docker compose
+```
+docker-compose -f docker-compose.test.yml up --build
+```
+To run tests, locally you'll need to run a redis container locally and then run
+```
+npm run test
+```
+Note: Here I've added tests for job controller only in interest of time
 
 ## Time Report:
 | Task                                                    | Time Spent |

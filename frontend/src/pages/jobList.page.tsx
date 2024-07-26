@@ -1,17 +1,17 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import axios, { AxiosResponse } from 'axios';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { JobInfo } from '../components/jobInfo.component';
 import { Header } from '../components/header.component';
 import { Button } from '../components/button.component';
 import { JobContext } from '../context/job.context';
-import { Job } from '../lib/types';
+import { JobsResponse } from '../lib/types';
 import { JOB_ACTIONS } from '../context/actions/job.actions';
 import { PAGE_SIZE } from '../lib/constants';
 import Pagination from '../components/pagination.component';
 
-export const JobListPage: React.FC = React.memo(() => {
+export function JobListPage(): JSX.Element {
   const { state, dispatch } = useContext(JobContext);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -23,9 +23,7 @@ export const JobListPage: React.FC = React.memo(() => {
 
   const fetchJobs = async (page: number) => {
     try {
-      const response = await axios.get<{data: Job[]}>(`/api/jobs?page=${page}&pageSize=${PAGE_SIZE}`);
-      console.log(response.data)
-      // @ts-ignore
+      const response: AxiosResponse<JobsResponse> = await axios.get<JobsResponse>(`/api/jobs?page=${page}&pageSize=${PAGE_SIZE}`);
       setTotal(response.data?.total)
       dispatch({ type: JOB_ACTIONS.SET_JOBS, payload: response.data.data });
     } catch (error) {
@@ -37,7 +35,6 @@ export const JobListPage: React.FC = React.memo(() => {
     try {
       await axios.post('/api/jobs');
       fetchJobs(currentPage)
-      // alert('New job created')
     } catch (error) {
       console.error('Error creating job:', error);
       alert('Failed to create new created')
@@ -71,6 +68,6 @@ export const JobListPage: React.FC = React.memo(() => {
       </div>
     </div>
   );
-});
+};
 
 export default JobListPage;

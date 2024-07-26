@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  redis_test:
+    image: "redis"
+  test:
+    build:
+      context: .
+    command: npm run test
+    depends_on:
+      - redis_test
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=${TEST_REDIS_HOST}
+      - REDIS_PORT=${TEST_REDIS_PORT}
+      - NODE_ENV={TEST_NODE_ENV}
+    volumes:
+      - "../local_data_copy:/app/backend/data"

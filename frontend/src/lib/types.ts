@@ -9,3 +9,11 @@ export enum JOB_STATUS {
   RESOLVED='resolved',
   ERROR='error'
 }
+
+export interface JobsResponse {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  data: Job[]
+}

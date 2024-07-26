@@ -6,11 +6,11 @@ import JobModel from '../models/Job.model';
 
 const app = express();
 app.use(express.json());
-app.use('/api', jobRoutes);
+app.use('/api/jobs', jobRoutes);
 
 describe('Job Controller', () => {
   beforeEach(() => {
-    JobModel.clear(); //Improvement: We should use test db here
+    JobModel.clear();
   });
 
   it('should create a new job', async () => {
